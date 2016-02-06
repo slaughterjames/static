@@ -28,10 +28,7 @@ import subprocess
 
 #programmer generated imports
 from logger import logger
-from peclass import peclass
-from msoclass import msoclass
-from pdfclass import pdfclass
-from elfclass import elfclass
+from fileclasses import peclass, pdfclass, msoclass, elfclass
 
 '''
 filetriage
