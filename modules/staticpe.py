@@ -23,7 +23,7 @@ def POE(logdir, target, logging, debug):
     full_dump = ''
     matches = ''
     output = logdir + 'FullDump.txt'
-    signaturedb = '/etc/static/UserDB.txt'
+    signaturedb = '/opt/static/UserDB.txt'
     if (logging == True): 
         LOG = logger()
 

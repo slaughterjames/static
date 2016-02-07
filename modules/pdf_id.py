@@ -30,7 +30,7 @@ def POE(logdir, target, logging, debug):
         newlogentry = 'Running pdfid against: <strong>' + target.filename + '</strong>'
         LOG.WriteLog(logdir, target.filename, newlogentry)
 
-    subproc = subprocess.Popen('/etc/static/pdfid_PL.py ' + target.filename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    subproc = subprocess.Popen('/opt/static/pdfid_PL.py ' + target.filename, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for strings_data in subproc.stdout.readlines():
          strings_output_data += strings_data
          if  (debug == True):

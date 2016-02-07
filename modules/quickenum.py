@@ -24,7 +24,7 @@ def POE(logdir, target, logging, debug):
     newlogentry = ''
     enum_output_data = ''
     length = 512
-    signaturedb = '/etc/static/UserDB.txt'
+    signaturedb = '/opt/static/UserDB.txt'
     signature = ''
     output = logdir + 'Quickenum.txt'
 

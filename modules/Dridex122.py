@@ -108,7 +108,7 @@ def POE(logdir, target, logging, debug):
                     LOG.WriteLog(logdir, target.filename, newlogentry)        
                 for stream_data in subproc.stdout.readlines():
                     if (debug == True):
-                        print stream_data
+                        print '[DEBUG]: ' + stream_data
                 i = 0                                  
             else:
                 j = oledump_data.find(':')
@@ -120,7 +120,7 @@ def POE(logdir, target, logging, debug):
                     LOG.WriteLog(logdir, target.filename, newlogentry)
                 for stream_data in subproc.stdout.readlines():
                     if (debug == True):
-                        print stream_data
+                        print '[DEBUG]: ' + stream_data
                 j = 0
 
             oledump_output_data += oledump_data
