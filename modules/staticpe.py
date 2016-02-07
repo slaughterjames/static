@@ -8,7 +8,7 @@ import pefile
 import peutils
 
 #programmer generated imports
-from peclass import peclass
+from fileclasses import peclass
 from logger import logger
 from fileio import fileio
 

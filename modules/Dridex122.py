@@ -7,7 +7,7 @@ import base64
 #third-party imports
 
 #programmer generated imports
-from msoclass import msoclass
+from fileclasses import msoclass
 from logger import logger
 from fileio import fileio
 

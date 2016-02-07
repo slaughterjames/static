@@ -7,7 +7,7 @@ import subprocess
 from oletools.olevba import VBA_Parser, TYPE_OLE, TYPE_OpenXML, TYPE_Word2003_XML, TYPE_MHTML
 
 #programmer generated imports
-from msoclass import msoclass
+from fileclasses import msoclass
 from logger import logger
 from fileio import fileio
 
