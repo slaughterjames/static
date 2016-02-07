@@ -69,7 +69,7 @@ def ConfRead():
     FConf = fileio()
     try:
         #Conf file hardcoded here
-    	FConf.ReadFile('/etc/static/static.conf')
+    	FConf.ReadFile('/opt/static/static.conf')
     except:
         print '[x] Unable to read configuration file'
         return -1
