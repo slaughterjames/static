@@ -45,7 +45,7 @@ Function: Display the usage parameters when called
 '''
 def Usage():
     print 'Usage: [required] --target --type --modules [all|specific] --output -- debug --listmodules --help'
-    print 'Example: /etc/static/static.py --target 123.exe --type pe --modules all --output /your/directory --debug'
+    print 'Example: /opt/static/static.py --target 123.exe --type pe --modules all --output /your/directory --debug'
     print 'Required Arguments:'
     print '--target - file that will be analyzed'
     print '--type - pe, elf, office, pdf'
