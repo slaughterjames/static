@@ -44,13 +44,14 @@ Usage()
 Function: Display the usage parameters when called
 '''
 def Usage():
-    print 'Usage: [required] --target --type --modules [all|specific] --output -- debug --listmodules --help'
+    print 'Usage: [required] --target --type --modules [all|specific] --force --output -- debug --listmodules --help'
     print 'Example: /opt/static/static.py --target 123.exe --type pe --modules all --output /your/directory --debug'
     print 'Required Arguments:'
     print '--target - file that will be analyzed'
     print '--type - pe, elf, office, pdf'
     print '--modules - all or specific'
     print 'Optional Arguments:'
+    print '--force - force analysis type even if the header details don\'t match'
     print '--output - choose where you wish the output to be directed'
     print '--listmodules - prints a list of available modules and their descriptions'
     print '--debug - prints verbose output to the screen '
@@ -129,6 +130,10 @@ def Parse(args):
             if option == 'modules':
                 CON.modules = args[i+1]
                 print option + ': ' + CON.modules
+
+            if option == 'force':
+                CON.force = True
+                print option + ': ' + str(CON.force)
 
             if option == 'output':
                 #This is an optional param and needs to be checked at read time
@@ -305,18 +310,24 @@ if __name__ == '__main__':
             PETRI = filetriage()
             CON.peobject = PETRI.Triage(CON.peobject, CON.logging, CON.logdir, CON.debug)
 
-            if (CON.peobject.header.find('PE32') == -1):   
-                print '[x] File type is not PE32 - Terminating'
-                Terminate (-1)
+            if (CON.peobject.header.find('PE32') == -1):
+                if (CON.force == True):   
+                    print '[x] File type is not PE32 - analyzing anyway'
+                else:                
+                    print '[x] File type is not PE32 - Terminating'
+                    Terminate (-1)
         elif (CON.type == 'office'):
             CON.msoobject = msoclass()
             CON.msoobject.filename = CON.target
             OFFTRI = filetriage()            
             CON.msoobject = OFFTRI.Triage(CON.msoobject, CON.logging, CON.logdir, CON.debug)
 
-            if ((CON.msoobject.header.find('Microsoft Office') == -1) and (CON.msoobject.header.find('Microsoft Excel') == -1) and (CON.msoobject.header.find('HTML document, Non-ISO extended-ASCII text, with CRLF line terminators')==-1)):   
-                print '[x] File type is not MS Office - Terminating'
-                Terminate (-1)
+            if ((CON.msoobject.header.find('Microsoft Office') == -1) and (CON.msoobject.header.find('Microsoft Excel') == -1) and (CON.msoobject.header.find('Microsoft Word')==-1)):   
+                if (CON.force == True):   
+                    print '[x] File type is not MS Office - analyzing anyway'
+                else:                
+                    print '[x] File type is not MS Office - Terminating'
+                    Terminate (-1)
         elif (CON.type == 'pdf'):
             CON.pdfobject = pdfclass()
             CON.pdfobject.filename = CON.target
@@ -324,8 +335,11 @@ if __name__ == '__main__':
             CON.pdfobject = PDFTRI.Triage(CON.pdfobject, CON.logging, CON.logdir, CON.debug)
 
             if ((CON.pdfobject.header.find('PDF document') == -1)):   
-                print '[x] File type is not Portable Document Format (PDF) - Terminating'
-                Terminate (-1)
+                if (CON.force == True):   
+                    print '[x] File type is not Portable Document Format (PDF) - analyzing anyway'
+                else:                
+                    print '[x] File type is not Portable Document Format (PDF) - Terminating'
+                    Terminate (-1)
         elif (CON.type == 'elf'):
             CON.elfobject = elfclass()
             CON.elfobject.filename = CON.target
@@ -333,8 +347,11 @@ if __name__ == '__main__':
             CON.elfobject = ELFTRI.Triage(CON.elfobject, CON.logging, CON.logdir, CON.debug)
 
             if (((CON.elfobject.header.find('ELF 32-bit LSB  executable')) == -1) and ((CON.elfobject.header.find('ELF 64-bit LSB  executable')) == -1)):   
-                print '[x] File type is not ELF - Terminating'
-                Terminate (-1)
+                if (CON.force == True):   
+                    print '[x] File type is not ELF - analyzing anyway'
+                else:                
+                    print '[x] File type is not ELF - Terminating'
+                    Terminate (-1)
 
         CON.OrganizeModules()
     

@@ -40,6 +40,7 @@ class controller:
 
         self.target = ''
         self.debug = False
+        self.force = False
         self.peobject = ''
         self.emlobject = ''
         self.msoobject = ''
