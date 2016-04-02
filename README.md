@@ -68,12 +68,10 @@ fileaddin getstrings
 peaddin staticpe
 peaddin quickenum
 officeaddin extractmacro
-officeaddin Dridex122
-officeaddin chrsearch
 pdfaddin pdfparse
 pdfaddin pdf_id
 elfaddin objdump
-elfaddin readelf
+elfaddin readelff
 
 #END OF FILE
 
@@ -83,13 +81,14 @@ The use of Static is relatively straight forward.  To bring up the help screen, 
 
 ~ $ /opt/static/static.py --help
 [*] Arguments: 
-Usage: [required] --target --type --modules [all|specific] --output -- debug --listmodules --help
+Usage: [required] --target --type --modules [all|specific] --force --output -- debug --listmodules --help
 Example: /opt/static/static.py --target 123.exe --type pe --modules all --output /your/directory --debug
 Required Arguments:
 --target - file that will be analyzed
 --type - pe, elf, office, pdf
 --modules - all or specific
 Optional Arguments:
+--force - force analysis type even if the header details don't match
 --output - choose where you wish the output to be directed
 --listmodules - prints a list of available modules and their descriptions
 --debug - prints verbose output to the screen 
@@ -115,9 +114,6 @@ Quickly ennumerates the different sections of the PE file target and lists thing
 [*] extractmacro
 Extract any macro code from a Microsoft Office file
 
-[*] Dridex122
-Analyzes known Dridex affiliate 12X faux MS-Word e-mail attachments
-
 [*] pdfparse
 Parses and shows the structure of a PDF file using Didier Stevens' pdf-parser.py
 
@@ -133,82 +129,97 @@ Uses readelf to pull the header information from an ELF file
 
 To deploy Static against a target file without the logger or debugging enabled, the following command can be used.  Example output is shown.
 
-$ /opt/static/static.py --target 983bv3.exe --type pe --modules all
+$ /opt/static/static.py --target 65df78.exe --type pe --modules all
 [*] Arguments: 
-target: 983bv3.exe
+target: 65df78.exe
 type: pe
 modules: all
 [-] Logger not active
-[*] MD5 hash of file 983bv3.exe: 5bddf5271b1472eca61a6a2d66280020
-[*] SHA256 hash of file 983bv3.exe: 8030e075bd21b43f759a7095f34773df6316a5c38ea2956e6acfa76d0e82bd84
-[*] Fileheader: 983bv3.exe: PE32 executable (GUI) Intel 80386, for MS Windows
+[*] MD5 hash of file 65df78.exe: 999ebe8b65caf99faf1172074d7e5d3c
+[*] SHA256 hash of file 65df78.exe: 231c6f348604eaf77747a1fdf83fab8431d1976f19e87c8eb1f22169be1a64cf
+[*] If a VirusTotal record exists, it will be located here: https://www.virustotal.com/en/file/231c6f348604eaf77747a1fdf83fab8431d1976f19e87c8eb1f22169be1a64cf/analysis/
+[*] Fileheader: 65df78.exe: PE32 executable (GUI) Intel 80386 (stripped to external PDB), for MS Windows
 
 [*] Organize Modules
-
-[*] Module virustotal located
-[*] Module virustotal loaded successfully
-[*] Executing module
-[*] CURL - pulling the current VirusTotal data for sample 983bv3.exe
-[*] Offline VirusTotal data can be found here: /home/static/983bv3.exe/VirusTotalReport.html
-[*] The live VirusTotal data can be found here: https://www.virustotal.com/en/file/8030e075bd21b43f759a7095f34773df6316a5c38ea2956e6acfa76d0e82bd84/analysis/
 
 [*] Module getstrings located
 [*] Module getstrings loaded successfully
 [*] Executing module
-[*] Strings data had been written to file here: /home/static/983bv3.exe/Strings.txt
+[*] Strings data had been written to file here: /home/jim/rafalelogs/65df78.exe/Strings.txt
 
 [*] Module staticpe located
 [*] Module staticpe loaded successfully
 [*] Executing module
 [*] Signature Matches: None
 [-] Unable to process DIRECTORY_ENTRY_EXPORT object:  PE instance has no attribute 'DIRECTORY_ENTRY_EXPORT'
-[*] Dump file has been generated to file here: /home/static/983bv3.exe/FullDump.txt
+[*] Dump file has been generated to file here: /home/jim/rafalelogs/65df78.exe/FullDump.txt
 
 [*] Module quickenum located
 [*] Module quickenum loaded successfully
 [*] Executing module
-[*] File compile time: 2015-10-08 11:49:09
-[*] Section Name: .text
-    Virtual Address: 0x1000
-    Virtual Size: 0xe334
-    Raw Data Size: 58368
-[*] Section Name: .rdata
-    Virtual Address: 0x10000
-    Virtual Size: 0x6f9a
-    Raw Data Size: 28672
+[*] File compile time: 1991-09-25 11:34:42
+[*] PEiD Signature: [65df78.exe]
+signature = 55 89 e5 56 83 e4 f8 b8 c0 8f 00 00 e8 1f 01 00 00 c7 84 24 b4 8f 00 00 00 00 00 00 c7 84 24 b0 8f 00 00 ea 47 00 00 c7 84 24 ac 8f 00 00 43 1a 00 00 50 8d 45 04 a3 10 40 02 01 58 b8 17 00 00 00 b9 20 00 00 00 8b 54 24 18 89 14 24 c7 44 24 04 17 00 00 00 89 4c 24 08 89 44 24 10 e8 de fb ff ff 83 f8 00 74 0b b8 ff ff ff ff 8d 65 fc 5e 5d c3 eb 00 89 84 24 9c 8f 00 00 8b 45 00 a3 04 40 02 01 8b 84 24 9c 8f 00 00 8b 84 24 b0 8f 00 00 8b 8c 24 b4 8f 00 00 31 d2 be fa af 00 00 29 c6 19 ca 89 1d 00 40 02 01 89 b4 24 a0 8f 00 00 89 94 24 a4 8f 00 00 81 f6 bd 45 00 00 09 d6 89 74 24 0c 74 a2 eb 00 b8 3c 22 00 00 8b 8c 24 ac 8f 00 00 8b 94 24 ac 8f 00 00 81 f1 b0 11 00 00 8b 35 a8 41 00 01 29 d0 89 34 24 89 4c 24 04 89 44 24 08 e8 68 f6 ff ff 89 44 24 1c 89 3d 0c 40 02 01 89 35 08 40 02 01 a1 14 40 02 01 05 bf ad ff ff a3 14 40 02 01 e8 e4 f0 ff ff 0f 0b 66 90 55 89 e5 5d c3 66 90 90 66 90 66 90 66 90 66 90 51 8d 4c 24 04 2b c8 1b c0 f7 d0 23 c8 8b c4 25 00 f0 ff ff 3b c8 72 0a 8b c1 59 94 8b 00 89 04 24 c3 2d 00 10 00 00 85 00 eb e9 ff ff ff ff 00 00 00 00 ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ep_only = true
+section_start_only = false
+
+
 [*] Section Name: .data
-    Virtual Address: 0x17000
-    Virtual Size: 0x5504
-    Raw Data Size: 14848
-[*] Section Name: .tima
+    Virtual Address: 0x1000
+    Virtual Size: 0x31b0
+    Raw Data Size: 12800
+
+[*] Section Name: .ort1
+    Virtual Address: 0x5000
+    Virtual Size: 0x80c8
+    Raw Data Size: 33280
+
+[*] Section Name: .ort2
+    Virtual Address: 0xe000
+    Virtual Size: 0xba6f
+    Raw Data Size: 48128
+
+[*] Section Name: .ort3
+    Virtual Address: 0x1a000
+    Virtual Size: 0x1b24
+    Raw Data Size: 7168
+
+[*] Section Name: .edata
+    Virtual Address: 0x1c000
+    Virtual Size: 0x37
+    Raw Data Size: 512
+
+[*] Section Name: .text0
     Virtual Address: 0x1d000
-    Virtual Size: 0x10b2b
-    Raw Data Size: 68608
-[*] Section Name: .texa
-    Virtual Address: 0x2e000
-    Virtual Size: 0x2f0b
-    Raw Data Size: 12288
-[*] Section Name: .tora
-    Virtual Address: 0x31000
-    Virtual Size: 0x19ca
-    Raw Data Size: 6656
-[*] Section Name: .dosa
-    Virtual Address: 0x33000
-    Virtual Size: 0x1783
-    Raw Data Size: 6144
-[*] Section Name: .gafe
-    Virtual Address: 0x35000
-    Virtual Size: 0x571
-    Raw Data Size: 1536
+    Virtual Size: 0x5e7b
+    Raw Data Size: 24576
+
+[*] Section Name: .rdata
+    Virtual Address: 0x23000
+    Virtual Size: 0x32
+    Raw Data Size: 512
+
+[*] Section Name: .bss
+    Virtual Address: 0x24000
+    Virtual Size: 0x14a0
+    Raw Data Size: 0
+
+[*] Section Name: .idata
+    Virtual Address: 0x26000
+    Virtual Size: 0x7c
+    Raw Data Size: 512
+
 [*] Section Name: .rsrc
-    Virtual Address: 0x36000
-    Virtual Size: 0x1aa08
-    Raw Data Size: 109568
+    Virtual Address: 0x27000
+    Virtual Size: 0x1000
+    Raw Data Size: 1536
+
 [*] Section Name: .reloc
-    Virtual Address: 0x51000
-    Virtual Size: 0x1e00
-    Raw Data Size: 7680
-[*] Quickenum data had been written to file here: /home/static/983bv3.exe/Quickenum.txt
+    Virtual Address: 0x28000
+    Virtual Size: 0xfff
+    Raw Data Size: 512
+
+[*] Quickenum data had been written to file here: /home/jim/rafalelogs/65df78.exe/Quickenum.txt
 
 To deploy Static against a target using only a single module, the following syntax would be used:
 
@@ -304,8 +315,6 @@ static.conf
 static.py
 
 Module Listing:
-Dridex122.py
-chrsearch.py
 extractmacro.py
 getstrings.py
 objdump.py
