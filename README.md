@@ -1,4 +1,6 @@
-﻿Using Static v0.1
+﻿Static Installation Script: http://www.slaughterjames.com/storage/get-static.sh
+
+Using Static v0.1
 
 Static is an analysis framework for malware.  Rather than being a monolithic program, Static allows for the addition of individual scripts to handle specific scenarios.  Currently, Static supports plug scripts for the PE, ELF, MS Office and PDF file formats.
 
