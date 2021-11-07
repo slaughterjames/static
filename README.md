@@ -22,6 +22,6 @@ Static is a tool designed to help perform the initial triage of a potentially ma
 
 ## Documentation
 
-Use the [Installation Guide](https://github.com/slaughterjames/static/blob/main/doc/install.md) to get started. - ToDo
+Use the [Installation Guide](https://github.com/slaughterjames/static/blob/main/docs/install.md) to get started. - ToDo
 
-Go to the [User's Guide](https://github.com/slaughterjames/static/blob/main/doc/user_guide.md) for additional information. -ToDo
+Go to the [User's Guide](https://github.com/slaughterjames/static/blob/main/docs/user_guide.md) for additional information. -ToDo
