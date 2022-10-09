@@ -100,7 +100,11 @@ def POE(POE):
                 return -1
 
             result = json.loads(result)
-            suggested_threat_label = result['data']['attributes']['popular_threat_classification']['suggested_threat_label']
+            try:
+                suggested_threat_label = result['data']['attributes']['popular_threat_classification']['suggested_threat_label']
+            except:
+                print ('[x] popular_threat_classification is not available...')
+                suggested_threat_label = 'N/A'
             harmless = result['data']['attributes']['last_analysis_stats']['harmless']
             undetected = result['data']['attributes']['last_analysis_stats']['undetected']
             suspicious  = result['data']['attributes']['last_analysis_stats']['suspicious']
@@ -115,11 +119,11 @@ def POE(POE):
             print ('[-] Number of A/V engines not detecting sample: ' + str(undetected))
             newlogentry = 'Number of A/V engines not detecting sample: ' + str(undetected)
             LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)
-            print ('[-] Number of A/V engines not marking sample as suspicious: ' + str(suspicious))
-            newlogentry = 'Number of A/V engines not marking sample as suspicious: ' + str(suspicious)
+            print ('[-] Number of A/V engines marking sample as suspicious: ' + str(suspicious))
+            newlogentry = 'Number of A/V engines marking sample as suspicious: ' + str(suspicious)
             LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)
-            print ('[-] Number of A/V engines not marking sample as malicious: ' + str(malicious))
-            newlogentry = 'Number of A/V engines not marking sample as malicious: ' + str(malicious)
+            print ('[-] Number of A/V engines marking sample as malicious: ' + str(malicious))
+            newlogentry = 'Number of A/V engines marking sample as malicious: ' + str(malicious)
             LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)
         else:
             print (colored('[x] HTTP Error [' + str(vt_api_files.get_last_http_error()) +']', 'red', attrs=['bold']))
