@@ -1,20 +1,20 @@
 #! /usr/bin/env python3
 '''
-Static v0.2 - Copyright 2021 James Slaughter,
-This file is part of Static v0.2.
+Static v0.3 - Copyright 2022 James Slaughter,
+This file is part of Static v0.3.
 
-Static v0.2 is free software: you can redistribute it and/or modify
+Static v0.3 is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Static v0.2 is distributed in the hope that it will be useful,
+Static v0.3 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Static v0.2.  If not, see <http://www.gnu.org/licenses/>.
+along with Static v0.3.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 #python import
@@ -51,10 +51,10 @@ def Usage():
     print ('--target - Single file that will be analyzed')
     print ('OR')
     print ('--targetfolder - Folder containing multiple files to examine in one session')
-    print ('--type - triage, search, pe, elf, office.  --triage can be used with every type except search by enclosing the statement in quotes \"\"')
+    print ('--type - triage, search, fetch, pe, elf, office, lnk.  --triage can be used with every type except search and fetch by enclosing the statement in quotes \"\"')
     print ('--modules - all or specific')
     print ('Optional Arguments:')
-    print ('--hash - MD5, SHA1 or SHA256 hash to use with --type search function')
+    print ('--hash - MD5, SHA1 or SHA256 hash to use with --type search and --type fetch functions')
     print ('--force - Force analysis type even if the header details don\'t match')
     print ('--sleeptime - Choose the sleep period between targets when --targetfolder is used.  Default is 15 seconds.  Value must be between 0 and 120.')
     print ('--output - Choose where you wish the output to be directed')
@@ -162,7 +162,9 @@ def Parse(args):
                 for type_out in CON.type:
                     print (option + ': ' + type_out)
                     if (type_out == 'search'):
-                        CON.search = True 
+                        CON.search = True
+                    if (type_out == 'fetch'):
+                        CON.fetch = True  
 
             if option == 'modules':
                 CON.modules = args[i+1]
@@ -213,9 +215,15 @@ def Parse(args):
         print (option + ': ' + str(CON.listapikeys))
         print ('')
 
-    else:                                        
-        #These params will only be checked if we're not searching...
-        if (CON.search == False):        
+    else:
+        #These params cannot be used concurrently
+        if ((CON.search == True) and (CON.fetch == True)):
+            print (colored('[x] search and fetch cannot be used simultaneously.', 'red', attrs=['bold']))
+            print ('')
+            return -1 
+            
+        #These params will only be checked if we're not searching or fetching...
+        if ((CON.search == False) and (CON.fetch == False)):
             if ((len(CON.target) < 3) and (len(CON.targetfolder) < 3) and (len(CON.hash) < 3)):
                 print (colored('[x] target, targetfolder or hash are required arguments.', 'red', attrs=['bold']))
                 print ('')
@@ -251,6 +259,11 @@ def Parse(args):
 
         if ((CON.search == True) and (len(CON.hash) < 3)):
             print (colored('[x] hash must be used with type search.', 'red', attrs=['bold']))
+            print ('')
+            return -1
+
+        if ((CON.fetch == True) and (len(CON.hash) < 3)):
+            print (colored('[x] hash must be used with type fetch.', 'red', attrs=['bold']))
             print ('')
             return -1 
 
@@ -350,9 +363,13 @@ Function: - Does the doing against a target
 '''
 def Execute():
 
-    if (CON.search == True):
-        CON.logdir = CON.logroot.strip() + '/' + CON.hash.strip() + '/'
-        CON.targetobject.logdir = CON.logroot.strip() + '/' + CON.hash.strip() + '/'
+    if ((CON.search == True) or (CON.fetch == True)):
+        if (len(CON.output) != 0):
+            CON.logdir = CON.output.strip() + '/' + CON.hash.strip() + '/'
+            CON.targetobject.logdir = CON.output.strip() + '/' + CON.hash.strip() + '/'
+        else:
+            CON.logdir = CON.logroot.strip() + '/' + CON.hash.strip() + '/'
+            CON.targetobject.logdir = CON.logroot.strip() + '/' + CON.hash.strip() + '/'
         if (len(CON.target) < 40):
             CON.targetobject.MD5 = CON.target
         elif ((len(CON.target) > 39) and (len(CON.target) < 50)):
@@ -362,9 +379,10 @@ def Execute():
         else:
             print (colored('[x] The hash structure is not correct.  Terminating...', 'red', attrs=['bold']))
             return -1
-    elif ((len(CON.output) != 0)and (CON.search == False)):
-        CON.logdir = CON.output.strip() + '/' + os.path.basename(CON.targetobject.target.strip()) + '/'
-        CON.targetobject.logdir = CON.output.strip() + '/' + os.path.basename(CON.targetobject.target.strip()) + '/'
+    elif (len(CON.output) != 0):
+        if ((CON.fetch == False) and (CON.search == False)):
+            CON.logdir = CON.output.strip() + '/' + os.path.basename(CON.targetobject.target.strip()) + '/'
+            CON.targetobject.logdir = CON.output.strip() + '/' + os.path.basename(CON.targetobject.target.strip()) + '/'
     else:
         CON.logdir = CON.logroot.strip() + os.path.basename(CON.targetobject.target.strip()) + '/'
         CON.targetobject.logdir = CON.logroot.strip() + os.path.basename(CON.targetobject.target.strip()) + '/'
@@ -393,7 +411,9 @@ def Execute():
             print (colored('[x] Unable to create LOG object for summary file!', 'red', attrs=['bold']))
 
     if (CON.search == True):
-        print ('[-] Search active...skipping triage') 
+        print ('[-] Search active...skipping triage')
+    elif (CON.fetch == True):
+        print ('[-] Fetch active...skipping triage')
     elif (('triage' in CON.type) and (CON.search == False)):
         TRI = filetriage()
         CON.targetobject = TRI.triage(CON.targetobject, CON.logging, CON.logdir, CON.nolinksummary, CON.debug)
@@ -401,34 +421,51 @@ def Execute():
         TRI = filetriage()
         CON.targetobject = TRI.triage(CON.targetobject, CON.logging, CON.logdir, CON.nolinksummary, CON.debug)
 
-        if (CON.type == 'pe'):
+        if ('pe' in CON.type):
+            if (CON.debug == True):
+                print ('[DEBUG] CON.targetobject.header: ' + CON.targetobject.header)
             if (CON.targetobject.header.find('PE32') == -1):
                 if (CON.force == True):   
                     print ('[x] File type is not PE32 - analyzing anyway...')
                 else:
                     print ('[x] File type is not PE32 - Terminating. Use --force to continue analysis...')
                     Terminate (-1)
-        elif (CON.type == 'office'):
+        elif ('office' in CON.type ):
+            if (CON.debug == True):
+                print ('[DEBUG] CON.targetobject.header: ' + CON.targetobject.header)
             if ((CON.targetobject.header.find('Microsoft Office') == -1) and (CON.targetobject.header.find('Microsoft Excel') == -1) and (CON.targetobject.header.find('Microsoft Word')==-1)):   
                 if (CON.force == True):   
                     print ('[x] File type is not MS Office - analyzing anyway...')
                 else:                
                     print ('[x] File type is not MS Office - Terminating. Use --force to continue analysis...')
                     Terminate (-1)        
-        elif (CON.type == 'pdf'):
+        elif ('pdf' in CON.type):
+            if (CON.debug == True):
+                print ('[DEBUG] CON.targetobject.header: ' + CON.targetobject.header)
             if ((CON.targetobject.header.find('PDF document') == -1)):
                 if (CON.force == True):   
                     print ('[x] File type is not Portable Document Format (PDF) - analyzing anyway...')
                 else:                
                     print ('[x] File type is not Portable Document Format (PDF) - Terminating. Use --force to continue analysis...')
                     Terminate (-1)
-        elif (CON.type == 'elf'):
+        elif ('elf' in CON.type):
+            if (CON.debug == True):
+                print ('[DEBUG] CON.targetobject.header: ' + CON.targetobject.header)
             if (((CON.targetobject.header.find('ELF 32-bit LSB  executable')) == -1) and ((CON.targetobject.header.find('ELF 64-bit LSB  executable')) == -1)):   
                 if (CON.force == True):   
                     print ('[x] File type is not ELF - analyzing anyway...')
                 else:                
                     print ('[x] File type is not ELF - Terminating. Use --force to continue analysis...')
                     Terminate (-1)
+        elif ('lnk' in CON.type):
+            if (CON.debug == True):
+                print ('[DEBUG] CON.targetobject.header: ' + CON.targetobject.header)
+            if (CON.targetobject.header.find('MS Windows shortcut') == -1):   
+                if (CON.force == True):   
+                    print ('[x] File type is not LNK - analyzing anyway...')
+                else:                
+                    print ('[x] File type is not LNK - Terminating. Use --force to continue analysis...')
+                    Terminate (-1)       
 
     ret = MMS.OrganizeModules(CON.targetobject)
     if (ret !=0 ):
@@ -519,13 +556,13 @@ if __name__ == '__main__':
     else:
         print ('[-] Logger not active')
 
-    if (CON.search == True):
+    if ((CON.search == True) or (CON.fetch == True)):
         CON.target = CON.hash 
         CON.targetfilename = CON.hash
         CON.targetobject = targetclass(CON.logging, CON.debug, CON.nolinksummary, CON.target, CON.targetfilename, CON.useragent, CON.yararulesdirectory, CON.force, CON.apikeys)
         Execute()
         del CON.targetobject
-    elif ((CON.singletarget == True) and (CON.search == False)):
+    elif ((CON.singletarget == True) and (CON.search == False) and (CON.fetch == False)):
         CON.targetfilename = os.path.basename(CON.target.strip())
         CON.targetobject = targetclass(CON.logging, CON.debug, CON.nolinksummary, CON.target, CON.targetfilename, CON.useragent, CON.yararulesdirectory, CON.force, CON.apikeys)
         Execute()

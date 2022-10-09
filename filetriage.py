@@ -1,19 +1,19 @@
 '''
-Static v0.2 - Copyright 2021 James Slaughter,
-This file is part of Static v0.2.
+Static v0.3 - Copyright 2022 James Slaughter,
+This file is part of Static v0.3.
 
-Static v0.2 is free software: you can redistribute it and/or modify
+Static v0.3 is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Static v0.2 is distributed in the hope that it will be useful,
+Static v0.3 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Static v0.2.  If not, see <http://www.gnu.org/licenses/>.
+along with Static v0.3.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 '''
@@ -92,7 +92,7 @@ class filetriage:
         for filedata in subproc.stdout.readlines():
             temp = str(filedata)
             if (debug == True):
-                print ('temp: ' + temp)
+                print ('[DEBUG] temp: ' + temp)
 
         print (colored('[*] File has been unzipped to: ', 'green') + colored(output, 'blue', attrs=['bold']))
         if ((logging == True) and (nolinksummary == False)):
@@ -117,7 +117,7 @@ class filetriage:
         for filedata in subproc.stdout.readlines():
             temp = str(filedata)
             if (debug == True):
-                print ('temp: ' + temp)
+                print ('[DEBUG] temp: ' + temp)
 
         intLen = len(temp)
         strpos = temp.find(':')
@@ -157,37 +157,40 @@ class filetriage:
             print (colored('[x] An error has occurred: ' + str(e), 'red', attrs=['bold']))
             return -1
 
-        for exif_data in FI.fileobject:
-            exif_output_data += str(exif_data).strip('b\'\\n') + '\n'
-            if (debug == True):
-                print (exif_output_data)
+        try:
+            for exif_data in FI.fileobject:
+                exif_output_data += str(exif_data).strip('b\'\\n') + '\n'
+                if (debug == True):
+                    print (exif_output_data)
 
-
-            if('File Type' in exif_data):
-                print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
-                if (logging == True):
-                    newlogentry = exif_data
-                    LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
-            elif('Software' in exif_data):
-                print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
-                if (logging == True):
-                    newlogentry = exif_data
-                    LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)        
-            elif('MIME Type' in exif_data):
-                print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
-                if (logging == True):
-                    newlogentry = exif_data
-                    LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
-            elif ('Software:' in exif_data):
-                print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
-                if (logging == True):
-                    newlogentry = exif_data
-                    LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
-            elif ('Comp Obj User Type' in exif_data):
-                print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
-                if (logging == True):
-                    newlogentry = exif_data
-                    LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)               
+                if('File Type' in exif_data):
+                    print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
+                    if (logging == True):
+                        newlogentry = exif_data
+                        LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
+                elif('Software' in exif_data):
+                    print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
+                    if (logging == True):
+                        newlogentry = exif_data
+                        LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)        
+                elif('MIME Type' in exif_data):
+                    print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
+                    if (logging == True):
+                        newlogentry = exif_data
+                        LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
+                elif ('Software:' in exif_data):
+                    print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
+                    if (logging == True):
+                        newlogentry = exif_data
+                        LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
+                elif ('Comp Obj User Type' in exif_data):
+                    print (colored('[*] ' + exif_data, 'green',attrs=['bold']))
+                    if (logging == True):
+                        newlogentry = exif_data
+                        LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
+        except Exception as e:
+            print (colored('[x] An error has occurred: ' + str(e), 'red', attrs=['bold']))
+            return -1
 
         return 0
 
@@ -259,7 +262,7 @@ class filetriage:
             LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
             newlogentry = 'SHA256 hash of file ' + target.target + ': ' + target.SHA256          
             LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
-            newlogentry = 'If a VirusTotal record exists, it will be located here: https://www.virustotal.com/en/file/' + str(target.SHA256) + '/analysis/'
+            newlogentry = 'If a VirusTotal record exists, it will be located here: <a href=\"https://www.virustotal.com/en/file/' + str(target.SHA256) + '/analysis/\"> VirusTotal Analysis </a>'
             LOG.WriteSubLog(logdir, target.targetfilename, newlogentry)
 
         target.extension = self.fileextension(target, logging, logdir,  debug)

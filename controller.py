@@ -1,19 +1,19 @@
 '''
-Static v0.2 - Copyright 2021 James Slaughter,
-This file is part of Static v0.2.
+Static v0.3 - Copyright 2022 James Slaughter,
+This file is part of Static v0.3.
 
-Static v0.2 is free software: you can redistribute it and/or modify
+Static v0.3 is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Static v0.2 is distributed in the hope that it will be useful,
+Static v0.3 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Static v0.2.  If not, see <http://www.gnu.org/licenses/>.
+along with Static v0.3.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 '''
@@ -71,7 +71,8 @@ class controller:
         self.logger = ''#Boolean value read from the config file "logger" line.
         self.logging = False#Boolean value when True allows logging output.
         self.search = False#Boolean value, if set to true will suppress some settings to allow a target to be searched for.
-        self.hash = ''#input from the --hash cmd line flag.  Used exclusively with the --type search cmd line flag to allow a search for a hash value.
+        self.fetch = False#Boolean value, if set to true will suppress some settings to allow a target to be downloaded from a repository.
+        self.hash = ''#input from the --hash cmd line flag.  Used exclusively with the --type search and --type fetch cmd line flags to allow a search or to download a hash value.
         self.listmodules = False#Boolean input from the --listmodules cmd line flag
         self.updatefeeds = False#Boolean input from the --updatefeeds cmd line flag
         self.listaddintypes = False#Boolean input from the --listaddintypes cmd line flag
