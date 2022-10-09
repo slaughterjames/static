@@ -1,6 +1,6 @@
-## Static v0.2 - Installation Guide
+## Static v0.3 - Installation Guide
 
-Mirage has been tested on Ubuntu-based Linux distributions.  It is generally recommended using the the latest available version (or at least the latest long-term supported version).  It is also recognized that the code is primarily based on Python 2.7 which is now EOL.  The next major revision of the code will make the jump to Python3.
+Static has been tested on Ubuntu-based Linux distributions.  It is generally recommended using the the latest available version (or at least the latest long-term supported version).  The majority of the code is written in Python3.
 
 ## Download the Installation Script
 
@@ -71,7 +71,7 @@ nano /opt/static/static.conf
             "xforcepassword": ""
         }
     ],
-    "addintypes": ["triage","office","pe","elf","search"],
+    "addintypes": ["triage","office","pe","elf","search","fetch","lnk"],
     "addins": [
         {
             "triage": "VTMalwareReport"
@@ -111,6 +111,12 @@ nano /opt/static/static.conf
         },
         {
             "search": "IntezerSearch"
+        },
+        {
+            "lnk": "lnkdump" 
+        },
+        {
+            "fetch": "VTFetch"
         }
     ]
 }

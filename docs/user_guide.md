@@ -1,4 +1,4 @@
-## Static v0.2 - User Guide
+## Static v0.3 - User Guide
 
 ----
 
@@ -26,7 +26,7 @@ Static has several command-line flags which are described below. - ToDo
 | Flag | Description |
 |------------|-------------|
 | --target OR --targetfolder | Required - Investigate a single file or entire folder of them (NOTE!!! Must be of the same type!!!) |
-| --type | Required - triage, search, pe, elf, office. --triage can be used with every type except search by enclosing the statement in quotes "". |
+| --type | Required - triage, search, pe, elf, office, lnk. --triage can be used with every type except search by enclosing the statement in quotes "". |
 | --modules | Required - All or Specific - What specific modules to use or all of them for a particular type. |
 | --hash    | Optional - MD5, SHA1 or SHA256 hash to use with --type search function. |
 | --force | Optional - Force analysis type even if the header details don't match. |
@@ -45,19 +45,28 @@ The modules that come standard with Static are as follows:
 
 | Module | Type | Description |
 |------|-------------|---------|
-| VTMalwareReport | Triage | Description: Retrieves any available data for a target against the VirusTotal database. |
-| IntezerReport | Triage | Description: Retrieves any available data for a target against the Intezer database. |
-| malware_bazaar | Triage | Description: Retrieves any available data for a target against the Abuse.ch Malware Bazaar database. |
-| yara | Triage | Description: Runs Yara rules against the sample. |
-| staticpe | Info | Description: Uses PEUtils to get the particulars on the submitted sample to give a jump start on reverse engineering. |
-| readelf | Info | Description: Uses readelf to pull the header information from an ELF file. |
-| objdump | Info | Description: Dumps all headers, disassembled data from an ELF file using objdump. |
-| extractmacro | Info |  Description: Uses olevba to extract any macro code from a Microsoft Office file. |
-| vipermonkey | Info | Description: Runs Vipermonkey against an office sample. |
-| VTSearch | Info | Description: Retrieves any available data for a target against the VirusTotal database. |
-| malware_bazaar_search | Info | Description: Searches for any available data on a target against the Abuse.ch Malware Bazaar database. |
-| XForceSearch | Info | Description: Retrieves any available data for a target against the IBM XForce database. |
-| IntezerSearch | Info | Description: Retrieves any available data for a target against the Intezer database. |
+| VTMalwareReport | Triage | Description: Retrieves any available data for a target against the VirusTotal database. | 
+| VTSpecificReport | Triage | Description: Retrieves data for a target against the VirusTotal database specifically for the Fortinet, Kaspersky and Microsoft A/V engines. | 
+| IntezerReport | Triage | Description: Retrieves any available data for a target against the Intezer database. | 
+| malware_bazaar | Triage | Description: Retrieves any available data for a target against the Abuse.ch Malware Bazaar database. | 
+| CERTPL | Triage | Description: Retrieves any available data on a target against the CERT.PL malware database. | 
+| yara | Triage | Description: Runs Yara rules against the sample. | 
+| reademail | Email | Description: Reads an eml or msg file and outputs the contents. | 
+| staticpe | PE | Description: Uses PEUtils to get the particulars on the submitted sample to give a jump start on reverse engineering. | 
+| readelf | Elf | Description: Uses readelf to pull the header information from an ELF file. | 
+| objdump | Elf | Description: Dumps all headers, disassembled data from an ELF file using objdump. | 
+| extractmacro | Office | Description: Uses olevba to extract any macro code from a Microsoft Office file. | 
+| extractoleobj | Office | Description: Uses olevba to extract any ole object from a Microsoft Office file. | 
+| oledump | Office | Description: Uses oledump to extract any ole object from a Microsoft Office file. | 
+| rtfdump | Office | Description: Uses rtfdump to extract any ole object data from a Microsoft RTF file. | 
+| vipermonkey | Office | Description: Runs Vipermonkey against an office sample. | 
+| VTSearch | Search | Description: Retrieves any available data for a target against the VirusTotal database. | 
+| malware_bazaar_search | Search | Description: Searches for any available data on a target against the Abuse.ch Malware Bazaar database. | 
+| XForceSearch | Search | Description: Retrieves any available data for a target against the IBM XForce database. | 
+| IntezerSearch | Search | Description: Retrieves any available data for a target against the Intezer database. | 
+| CERTPL_search | Triage | Description: Searches for any available data on a target against the CERT.PL malware database. | 
+| lnkdump | Office | Description: Uses lnkinfo to extract data from a Microsoft Windows Shortcut file. | 
+| VTFetch | Search | Description: Retrieves a target file from the VirusTotal database. | 
 
 ### The config file
 
@@ -85,77 +94,70 @@ The config file in its entirety is:
 {
     "logger": "true",
     "logroot": "<add your log directory>",
-    "modulesdir": "/opt/mirage/modules/",
-    "useragent": "default",
+    "modulesdir": "/opt/scalp/static/modules/",
+    "yararulesdirectory": "/opt/static/yara/",
     "sleeptime": "7",
     "useragent": "default",
-    "addintypes": ["active","passive","info"],
+    "apikeys": [
+        {
+            "virustotal": ""
+        },
+        {
+            "intezer": ""
+        },
+        {
+            "xforceapi": ""
+        },
+        {
+            "xforcepassword": ""
+        }
+    ],
+    "addintypes": ["triage","office","pe","elf","search","fetch","lnk"],
     "addins": [
         {
-            "info": "ThreatCrowdReputation"
+            "triage": "VTMalwareReport"
         },
         {
-            "info": "XForceReputation"
+            "triage": "IntezerReport"
         },
         {
-            "info": "VTIPReport"
+            "triage": "malware_bazaar"
         },
         {
-            "info": "VTDomainReport"
+            "triage": "yara"
         },
         {
-            "info": "Secureworks"
+            "pe": "staticpe"
         },
         {
-            "info": "Shodan"
+            "elf": "readelf"
         },
         {
-            "info": "whois"
+            "elf": "objdump"
         },
         {
-            "info": "tor_node"
+            "office": "extractmacro"
         },
         {
-            "info": "abuse_ch_ransomware_ips"
+            "office": "vipermonkey"
         },
         {
-            "info": "abuse_ch_ransomware_domains"
+            "search": "VTSearch"
         },
         {
-            "info": "abuse_ch_ransomware_urls"
+            "search": "malware_bazaar_search"
         },
         {
-            "info": "abuse_ch_feodo"
-        },      
-        {
-            "info": "abuse_ch_urlhaus_host"
+            "search": "XForceSearch"
         },
         {
-            "info": "alexa"
+            "search": "IntezerSearch"
         },
         {
-            "info":"FortiguardReputation"
+            "lnk": "lnkdump" 
         },
         {
-            "passive": "dig"
-        },
-        {
-            "passive": "pynslookup"
-        },
-        {
-            "passive": "traceroute"
-        },
-        {
-            "passive": "wget"
-        },
-        {
-            "passive": "screenshot"
-        },
-        {
-            "passive": "cert"
-        },
-        {
-            "active":"jarmwrapper"
+            "fetch": "VTFetch"
         }
     ]
 }
@@ -180,7 +182,7 @@ opt/static/static.py --target example.doc --type office --modules all --output /
 To review multiple files in a single folder:
 
 ```bash
-/opt/static/static.py --targetfolder /home/scalp/hopper --type office --modules all --output /home/scalp/staticlogs2/test
+/opt/static/static.py --targetfolder /home/scalp/hopper --type office --modules all --output /home/scalp/staticlogs3/test
 ```
 
 Output to the console will look like the following: -ToDo
