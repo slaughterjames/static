@@ -97,6 +97,11 @@ def POE(POE):
             except:
                 print ('[x] popular_threat_classification is not available...')
                 suggested_threat_label = 'N/A'
+            try:
+                fortinet_result = result['data']['attributes']['last_analysis_results']['Fortinet']['result']
+            except:
+                print ('[x] fortinet_result is not available...')
+                fortinet_result = 'N/A'
             file_extension = result['data']['attributes']['type_extension']
             harmless = result['data']['attributes']['last_analysis_stats']['harmless']
             undetected = result['data']['attributes']['last_analysis_stats']['undetected']
@@ -113,6 +118,9 @@ def POE(POE):
                 LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)                
             print ('[*] VirusTotal suggested threat label: ' + suggested_threat_label)
             newlogentry = 'VirusTotal suggested threat label: ' + suggested_threat_label
+            LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)
+            print ('[-] Fortinet threat label: ' + fortinet_result)
+            newlogentry = 'Fortinet threat label: ' + fortinet_result
             LOG.WriteSubLog(POE.logdir, POE.targetfilename, newlogentry)
             print (colored('[*] VirusTotal A/V engine results: ', 'green', attrs=['bold']))
             print ('[-] Number of A/V engines marking sample as harmless: ' + str(harmless))
