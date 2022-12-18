@@ -140,7 +140,10 @@ def POE(POE):
             newlogentry = 'HTTP Error [' + str(vt_api_files.get_last_http_error()) +']'
             LOG.WriteStrongSubLog(POE.logdir, POE.targetfilename, newlogentry)
 
-    output = POE.logdir + POE.target + '.' + str(file_extension)
+    if (str(file_extension) == 'html'):
+        output = POE.logdir + POE.target + '_html_' + '.' + str(file_extension)
+    else:
+        output = POE.logdir + POE.target + '.' + str(file_extension)
     vt = 'https://www.virustotal.com/api/v3/files/' + POE.target.strip() + '/download'
     headers = ({'x-apikey': apikey.strip()})
 
